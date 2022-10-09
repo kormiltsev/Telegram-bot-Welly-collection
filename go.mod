@@ -1,4 +1,4 @@
-module github.com/NautiloosGo/tbot-welly
+module github.com/kormiltsev/tbot-welly
 
 go 1.18
 
