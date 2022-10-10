@@ -38,8 +38,7 @@ https://t.me/collectionist_bot
 
 ## Screenshots
 
-![App Screenshot](/tbot-welly/etc/s1.jpg?raw=true "Search")
-![App Screenshot](./etc/s2.jpg?raw=true "Show all photos")
+![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s1.png "Search")
 
 
 ## Points to improve:
