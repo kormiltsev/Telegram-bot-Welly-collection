@@ -4,7 +4,7 @@
 Story: 
 
 My kid collect Welly's toy cars. When he find toy in store he want to check does he already has that model or not. 
-So I create Telegram bot to fast check. 
+So I create Telegram bot to fast check (instead of an app =) )
 
 Catalog of items, Telegram used as UI.
 ## Features
@@ -39,9 +39,7 @@ https://t.me/collectionist_bot
 ## Screenshots
 
 ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s1.png "Search")
-
+![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s2.png "Show all photos")
 
 ## Points to improve:
-- add web access to catalog (with login/pass)
-- create app based on go (Android, iPhoneOS, iOS, PC)
-
+- add web access to catalog
