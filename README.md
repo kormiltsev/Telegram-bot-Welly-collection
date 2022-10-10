@@ -3,8 +3,9 @@
 
 Story: 
 
-My kid collect Welly's toy cars. When he find toy in store he want to check does he already has that model or not. 
+My kid collect Welly's toy cars. In store need to check does this toy is already in collectoin. 
 So I create Telegram bot to fast check (instead of an app =) )
+Next step is make it universal. By the way Telegram UI is good alternative to create app on every OS.
 
 Catalog of items, Telegram used as UI.
 ## Features
