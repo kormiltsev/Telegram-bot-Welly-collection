@@ -1,4 +1,16 @@
+# Personal data
 .env
-*exe
+
+# Local catalog
 Catalog.json
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 *linux*
+
+# Test binary, built with `go test -c`
+*.test
