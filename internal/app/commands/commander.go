@@ -68,7 +68,7 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 
 		// just text
 		switch update.CallbackQuery.Data {
-		case "xxx":
+		case "deletemsg":
 			log.Printf("xxx")
 		default:
 			FindItemWithPhoto(bot, update)
@@ -137,6 +137,10 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 				return
 			}
 			if strings.HasPrefix(update.Message.Text, "/deleteitem_") {
+				DeleteItemAsk(&u, bot, update.Message)
+				return
+			}
+			if strings.HasPrefix(update.Message.Text, "/deleteitemsure_") {
 				DeleteItem(&u, bot, update.Message)
 				return
 			}

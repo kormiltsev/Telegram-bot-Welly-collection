@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"log"
 	"sort"
@@ -191,6 +192,28 @@ func SendGallery(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Messa
 	_, err := bot.Send(msg)
 	if err != nil {
 		log.Println(err)
+	}
+}
+func DeleteItemAsk(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message) {
+	s := strings.Split(inputMessage.Text, "_")
+	log.Println(s)
+	w := product.FindID(strconv.FormatInt(inputMessage.Chat.ID, 10) + s[1])
+	msgt := fmt.Sprintf("Are you sure you want to DELETE this Item?\n%s %s %s\n/deleteitemsure_%s\n\n\n\n:(",
+		w.Manufacture,
+		w.Model,
+		w.ItemID,
+		s[1])
+	//msg.ReplyMarkp = tgbotapi.NewRemoveKeybard(true)
+	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgt)
+	a, err := bot.Send(msg)
+	if err != nil {
+		log.Panic(err)
+	}
+	<-time.After(time.Second * 5)
+	t := "Time out"
+	msgr := tgbotapi.NewEditMessageText(inputMessage.Chat.ID, a.MessageID, t)
+	if _, err = bot.Send(msgr); err != nil {
+		log.Panic(err)
 	}
 }
 func DeleteItem(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message) {
