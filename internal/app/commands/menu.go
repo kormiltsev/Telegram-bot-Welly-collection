@@ -17,7 +17,7 @@ func Menu1(u *UserSpec, bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 		log.Panic(err)
 	}
 	<-time.After(time.Second * 1)
-	t = "Actual commands for SuperUsers:\n/kidaddsuperuser_##########\n/kidadduser_##########\n/kidlistofusers\n/kidsleep - start sleep\n/kidwu - stop sleep\n/kidaskcatalog - catalog"
+	t = "Catalog"
 	msgr := tgbotapi.NewEditMessageText(update.Message.Chat.ID, a.MessageID, t)
 	if _, err = bot.Send(msgr); err != nil {
 		log.Panic(err)

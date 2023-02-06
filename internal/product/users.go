@@ -7,16 +7,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type User struct {
-	ID       int64  `json:"id"`
-	NameF    string `json:"first_name"`
-	NameL    string `json:"last_name"`
-	Username string `json:"username"`
-	Type     string `json:"type"`
-	Dialog   string `json:"dialog"`
-	NewItem  Welly  `json:"new_item"`
-}
-
 func NewUser() User {
 	return User{
 		ID:       0,

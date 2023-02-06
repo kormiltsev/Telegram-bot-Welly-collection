@@ -140,7 +140,7 @@ func FindItemWithPhoto(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 			file = tgbotapi.FileID(w.TitleFoto)
 		}
 		msg := tgbotapi.NewPhoto(update.CallbackQuery.Message.Chat.ID, file)
-		msg.Caption = fmt.Sprintf("%s %s %s\n%s %s\n/showallphotos_%s\n/deleteitem_%s",
+		msg.Caption = fmt.Sprintf("%s %s %s\n%s %s\n/showallphotos_%s\n\n\n\n/deleteitem_%s",
 			w.Manufacture,
 			w.Model,
 			w.ItemID,
@@ -198,7 +198,7 @@ func DeleteItemAsk(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Mes
 	s := strings.Split(inputMessage.Text, "_")
 	log.Println(s)
 	w := product.FindID(strconv.FormatInt(inputMessage.Chat.ID, 10) + s[1])
-	msgt := fmt.Sprintf("Are you sure you want to DELETE this Item?\n%s %s %s\n/deleteitemsure_%s\n\n\n\n:(",
+	msgt := fmt.Sprintf("Are you SURE you want to DELETE this Item?\n%s %s %s\n/deleteitemsure_%s\n\n\n\n:(",
 		w.Manufacture,
 		w.Model,
 		w.ItemID,

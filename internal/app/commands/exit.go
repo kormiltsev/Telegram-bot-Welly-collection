@@ -2,22 +2,17 @@ package commands
 
 import (
 	"log"
-	"os"
 	"strconv"
 
 	"github.com/kormiltsev/tbot-welly/internal/product"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/joho/godotenv"
 )
+
+var mineID = "278284468"
 
 // func Menu1(bot *tgbotapi.BotAPI, update tgbotapi.Update, Users *Ids64) {
 func SaveAndQuit(bot *tgbotapi.BotAPI) {
-	godotenv.Load()
-	mineID := os.Getenv("MYID")
-	if mineID == "" {
-		return
-	}
 	chatid64, err := strconv.ParseInt(mineID, 10, 64)
 	if err != nil {
 		log.Panic(err)

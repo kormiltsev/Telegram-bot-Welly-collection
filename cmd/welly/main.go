@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"log"
 	"os"
 
@@ -13,17 +13,53 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var myToken string
+var conf = product.Confpg{}
+var postgres bool
+
+func Flags() {
+	// in case of .env
+	godotenv.Load()
+	conf.Adress = os.Getenv("ADR")
+	conf.User = os.Getenv("USR")
+	conf.Password = os.Getenv("PASS")
+	conf.DB = os.Getenv("DB")
+
+	myToken = os.Getenv("TOKEN")
+
+	// in case of flags thru termina
+	{
+		a := flag.String("adr", conf.Adress, "localhost:8000")
+		u := flag.String("usr", conf.User, "Postgres user")
+		p := flag.String("pas", conf.Password, "postgres password")
+		d := flag.String("db", conf.DB, "database name")
+		tkn := flag.String("port", myToken, "TOKEN of Telegram bot")
+		i := flag.Bool("pg", false, "-db = postgres. default (false): internal file (json)")
+		flag.Parse()
+		conf.Adress = *a
+		conf.User = *u
+		conf.Password = *p
+		conf.DB = *d
+
+		myToken = *tkn
+		postgres = *i
+	}
+	// in case of any error use default
+	if conf.Adress == "" || conf.User == "" || conf.Password == "" || conf.DB == "" {
+		postgres = false
+	}
+}
+
 func main() {
 
-	godotenv.Load()
-	myToken := os.Getenv("TOKEN")
-	if myToken == "" {
-		log.Printf("input telegram bot unique token:") //in case no .env file, ask for TOKEN in terminal
-		fmt.Fscan(os.Stdin, &myToken)
-	} // as alternative you can start app in terminal with: TOKEN="dfgdfg" go run main.go
+	Flags()
+	//if myToken == "" {
+	// fmt.Println("input telegram bot unique token:") //in case no .env file, ask for TOKEN in terminal
+	// fmt.Fscan(os.Stdin, &myToken)
+	//} // as alternative you can start app in terminal with: TOKEN="dfgdfg" go run main.go
 	bot, err := tgbotapi.NewBotAPI(myToken)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	defer commands.SaveAndQuit(bot)
 
@@ -37,7 +73,7 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 
 	Ws, catok := product.GetCatalog() // Catalog from file
-	log.Printf("Catalog: %s", catok)
+	log.Println("Catalog: %s", catok)
 
 	// reminder:
 	// update.Message.Chat.UserName
@@ -53,7 +89,7 @@ func main() {
 	for update := range updates {
 		//log.Println(update.Message.Chat.UserName, update.Message.Chat.ID, update.Message.Text)
 		if update.CallbackQuery == nil { //if not button with CallBack, then income print in terminal and starts hendler
-			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+			//fmt.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 		}
 		commands.HandleUpdate(bot, update, Ws)
 	}

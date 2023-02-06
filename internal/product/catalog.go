@@ -9,24 +9,6 @@ import (
 	"time"
 )
 
-type Welly struct {
-	UniqID      string   `json:"uniq_id"`
-	UserID      string   `json:"user_id"`
-	ItemID      string   `json:"item_id"`
-	Manufacture string   `json:"manufacture"`
-	Model       string   `json:"model"`
-	Color       string   `json:"color"`
-	TitleFoto   string   `json:"title_foto"`
-	AllFoto     []string `json:"all_foto"`
-	Comments    string   `json:"comments"`
-}
-
-type UW struct {
-	Users   map[string]User
-	Wellyes map[string]Welly
-	Deleted map[string]Welly
-}
-
 var DeleteList map[string]Welly
 var WellyList map[string]Welly
 var UsersList map[string]User

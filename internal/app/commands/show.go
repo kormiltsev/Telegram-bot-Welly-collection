@@ -17,7 +17,6 @@ func ShowCatalog(u *UserSpec, bot *tgbotapi.BotAPI) {
 			w.Model,
 			w.ItemID)
 	}
-	mess = mess + "/menu"
 	msg := tgbotapi.NewMessage(u.Id64, mess)
 	msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 	if _, err := bot.Send(msg); err != nil {
@@ -43,7 +42,6 @@ func ShowCatalogbyID(u *UserSpec, bot *tgbotapi.BotAPI) {
 			}
 		}
 	}
-	mess = mess + "/menu"
 	msg := tgbotapi.NewMessage(u.Id64, mess)
 	msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 	if _, err := bot.Send(msg); err != nil {
@@ -59,7 +57,6 @@ func ShowCatalogDeleted(u *UserSpec, bot *tgbotapi.BotAPI) {
 			w.Model,
 			w.ItemID)
 	}
-	mess = mess + "/menu"
 	msg := tgbotapi.NewMessage(u.Id64, mess)
 	msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 	if _, err := bot.Send(msg); err != nil {
