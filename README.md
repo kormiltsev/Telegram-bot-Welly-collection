@@ -40,5 +40,5 @@ https://t.me/collectionist_bot
 
 | Search  | Show with photos | Add new |
 | ------------- | ------------- | ------------- |
-| ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s1.png "Search") | ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s2.png "Show photo") | ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s3.png "Add new") |
+| ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s1.jpeg "Search") | ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s2.jpeg "Show photo") | ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s3.jpeg "Add new") |
 
