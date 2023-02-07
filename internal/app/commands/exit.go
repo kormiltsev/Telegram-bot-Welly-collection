@@ -11,21 +11,16 @@ import (
 
 var mineID = "278284468"
 
-// func Menu1(bot *tgbotapi.BotAPI, update tgbotapi.Update, Users *Ids64) {
+// SaveAndQuit send whole catalog only to me in JSON file
+// using to beckup
 func SaveAndQuit(bot *tgbotapi.BotAPI) {
 	chatid64, err := strconv.ParseInt(mineID, 10, 64)
 	if err != nil {
 		log.Panic(err)
 	}
-	//t := "@Collectionist_bot was stoped\n"
 	catalogjson := product.CatalogAdres()
-	//t := "Catalog-" + strconv.FormatInt(time.Now().Unix(), 10) + ".json"
-	// data, _ := ioutil.ReadFile(catalogjson)
-	// b := tgbotapi.FileBytes{Name: t, Bytes: data}
-	// msg := tgbotapi.UploadData(mineID, b)
 	var listMediaInput []interface{}
 
-	//data, _ := ioutil.ReadFile(catalogjson)
 	listMediaInput = append(listMediaInput, tgbotapi.NewInputMediaDocument(tgbotapi.FilePath(catalogjson)))
 
 	msg := tgbotapi.NewMediaGroup(chatid64, listMediaInput)

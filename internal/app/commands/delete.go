@@ -10,58 +10,65 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/kormiltsev/tbot-welly/internal/product"
-	//"strings"
 )
 
-func DeleteItemAsk(u *UserSpec, bot *tgbotapi.BotAPI, update tgbotapi.Update) {
-	// s := strings.Split(inputMessage.Text, "_")
-	data := CallBackButton{}
-	json.Unmarshal([]byte(update.CallbackQuery.Data), &data)
-	itemid := data.ItemIDbyUser
+// DeleteItemAsk returns item and ask delete confirmation
+func DeleteItemAsk(itemid string, chatid int64, bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 
-	w := product.FindID(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10) + itemid)
+	w := product.FindID(strconv.FormatInt(chatid, 10) + itemid)
+
+	// creation message text
 	msgt := fmt.Sprintf("Are you SURE you want to DELETE this Item?\n%s %s %s\n:(",
 		w.Manufacture,
 		w.Model,
 		w.ItemID)
 
-	msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, msgt)
-	//msg.ReplyMarkp = tgbotapi.NewRemoveKeybard(true)
-	del, err := json.Marshal(CallBackButton{Command: "delete", ItemIDbyUser: w.UniqID[len(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10)):]})
+	// create message
+	msg := tgbotapi.NewMessage(chatid, msgt)
+
+	// add buttons
+	del, err := json.Marshal(CallBackButton{Command: "delete", ItemIDbyUser: w.UniqID[len(strconv.FormatInt(chatid, 10)):]})
 	if err != nil {
-		u = nil
+		del = nil
 	}
+
+	// add buttons
 	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("Yes, I'm sure. Delete", string(del)),
 		),
 	)
 
+	// send
 	a, err := bot.Send(msg)
 	if err != nil {
 		log.Panic(err)
 	}
+
+	// wait 5 secs and replace "delete" button
 	<-time.After(time.Second * 5)
 	t := "Time out"
-	msgr := tgbotapi.NewEditMessageText(update.CallbackQuery.Message.Chat.ID, a.MessageID, t)
+	msgr := tgbotapi.NewEditMessageText(chatid, a.MessageID, t)
 	if _, err = bot.Send(msgr); err != nil {
 		log.Panic(err)
 	}
 }
 
-func DeleteItem(u *UserSpec, bot *tgbotapi.BotAPI, update tgbotapi.Update) {
-	// s := strings.Split(inputMessage.Text, "_")
-	data := CallBackButton{}
-	json.Unmarshal([]byte(update.CallbackQuery.Data), &data)
-	itemid := data.ItemIDbyUser
+// DeleteItem returns item info and new quantity of items in catalog. Deletes item.
+func DeleteItem(itemid string, chatid int64, bot *tgbotapi.BotAPI, update tgbotapi.Update) {
+	// get item and delete
+	w, qty := product.DeleteID(strconv.FormatInt(chatid, 10) + itemid)
 
-	w, qty := product.DeleteID(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10) + itemid)
-
+	// set default image for message
 	file := tgbotapi.FileID("AgACAgIAAxkBAAIGomLrzy2KPw72xfdESzZ38rTCaBi7AALmwDEbmLVhSzsBlE2C-TvzAQADAgADcwADKQQ")
+
+	// set foto from item if exists
 	if len(w.TitleFoto) >= 60 {
 		file = tgbotapi.FileID(w.TitleFoto)
 	}
-	msg := tgbotapi.NewPhoto(update.CallbackQuery.Message.Chat.ID, file)
+
+	// create message
+	msg := tgbotapi.NewPhoto(chatid, file)
 	msg.Caption = fmt.Sprintf("%s %s %s\n%s %s\nWAS DELETED\n%d items in catalog",
 		w.Manufacture,
 		w.Model,
@@ -69,7 +76,8 @@ func DeleteItem(u *UserSpec, bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 		w.Color,
 		w.Comments,
 		qty)
-	//msg.ReplyMarkp = tgbotapi.NewRemoveKeybard(true)
+
+	// send
 	if _, err := bot.Send(msg); err != nil {
 		log.Panic(err)
 	}

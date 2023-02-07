@@ -1,8 +1,6 @@
 package product
 
 import (
-	//tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-
 	"sort"
 	"strconv"
 	"strings"
@@ -18,7 +16,7 @@ var Ws = UW{
 	Deleted: make(map[string]Welly),
 }
 
-// sample empty item
+// NewWelly returns sample empty item
 func NewWelly() Welly {
 	return Welly{
 		UniqID:      "000",
@@ -32,6 +30,8 @@ func NewWelly() Welly {
 		Comments:    "000",
 	}
 }
+
+// AddNewItem add item to memory and push to file
 func AddNewItem(i string, w Welly) int {
 	w.UniqID = i + strconv.FormatInt(time.Now().Unix(), 10)
 	Ws.Wellyes[w.UniqID] = w
@@ -39,6 +39,7 @@ func AddNewItem(i string, w Welly) int {
 	return len(Ws.Wellyes)
 }
 
+// FindItems returns array of items contains string (by Model, Manufacture or ID)
 func FindItems(uid string, ask string) []Welly {
 	ws := make([]Welly, 0)
 	for _, w := range Ws.Wellyes {
@@ -58,10 +59,12 @@ func FindItems(uid string, ask string) []Welly {
 	return ws
 }
 
+// FindID returns item by ID and returns item
 func FindID(id string) Welly {
 	return Ws.Wellyes[id]
 }
 
+// DeleteID move item from catalog to Delet catalog and returns item
 func DeleteID(id string) (Welly, int) {
 	w := FindID(id)
 	delete(Ws.Wellyes, id)
@@ -69,6 +72,8 @@ func DeleteID(id string) (Welly, int) {
 	SaveCatalog()
 	return w, len(Ws.Wellyes)
 }
+
+// FindItemsDeleted returns list of item deleted
 func FindItemsDeleted(uid string, ask string) []Welly {
 	ws := make([]Welly, 0)
 	for _, w := range Ws.Deleted {
@@ -88,6 +93,7 @@ func FindItemsDeleted(uid string, ask string) []Welly {
 	return ws
 }
 
+// GetCatalog create catalog
 func GetCatalog() (*UW, string) {
 
 	WellyList = make(map[string]Welly)
@@ -105,36 +111,3 @@ func GetCatalog() (*UW, string) {
 	}
 	return UploadCatalog(&Ws)
 }
-
-// func init() {
-// 	WellyList = make(map[string]Welly)
-// }
-
-// func CheckUserExist(inputMessage *tgbotapi.Message) {
-// 	//tgbotapi.update.Message.Chat.UserName
-// 	u := NewUser()
-// 	u.ID = inputMessage.Chat.ID
-// 	u.NameF = inputMessage.Chat.FirstName
-// 	u.NameL = inputMessage.Chat.LastName
-// 	u.Username = inputMessage.Chat.UserName
-// 	u.Type = inputMessage.Chat.Type
-
-// 	if status := CheckUserDB(u); status != "ok" {
-// 		log.Println(status)
-// 	}
-// }
-
-// var UsersList map[string]User
-
-// func CheckUserDB(u *User) string {
-// 	if _, ok := UsersList[strconv.FormatInt(u.ID, 10)]; ok {
-// 		return "ok"
-// 	} else {
-// 		UsersList[strconv.FormatInt(u.ID, 10)] = *u
-// 		return "ok"
-// 	}
-// 	return "DB error: cant add user in User list"
-// }
-// func init() {
-// 	UsersList = make(map[string]User)
-// }

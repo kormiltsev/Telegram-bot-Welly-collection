@@ -14,6 +14,7 @@ func CatalogAdres() string {
 	return file
 }
 
+// SaveCatalog save data to file
 func SaveCatalog() {
 	rawDataOut, err := json.MarshalIndent(&Ws, "", "  ")
 	if err != nil {

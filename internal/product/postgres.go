@@ -16,29 +16,12 @@ type PGcon struct {
 
 var PGurl = PGcon{}
 
+// save database url
 func SetURL(url string) {
 	PGurl.URL = url
 }
 
-// CREATE TABLE IF NOT EXISTS urls(
-//
-//		userid integer not null,
-//		alias text not null unique,
-//		original text not null,
-//		deleted bool
-//	  )
-//
-// CREATE TABLE $1
-// var sqlQtyColumns =
-// SELECT COUNT(*)
-// FROM INFORMATION_SCHEMA.COLUMNS
-// WHERE table_catalog = $1
-// AND table_name = $2
-// ;
-// ALTER TABLE $1 ADD COLUMN $2 text;
-// var sqlAddColumn = `
-// CREATE TABLE $1(
-
+// UploadRowPostgres push new row to table
 func UploadRowPostgres(w *Welly) error {
 	connString := PGurl.URL
 	ctx := context.Background()
@@ -84,15 +67,5 @@ values($1, $2, $3, $4, $5, $6, $7, $8, $9)
 	if err != nil {
 		log.Printf("Unable to insert: %s\n", err)
 	}
-
-	// read
-	// var id int32
-	// var selectSlice []string
-	// err = conn.QueryRow("select id, strings from slice_test order by id desc limit 1").Scan(&id, &selectSlice)
-	// if err != nil {
-	// 	log.Fatalf("Unable to select: %v", err)
-	// }
-	// fmt.Println("id:", id, "selectSlice", selectSlice)
-	// conn.Close()
 	return nil
 }

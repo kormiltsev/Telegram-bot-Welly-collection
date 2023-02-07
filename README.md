@@ -1,25 +1,20 @@
 
-# Telegram bot for collections
+# Telegram bot for Welly 1:60 toy cars collections
 
-Story: 
+Bot keeps items in file (by default) or connect to postgres.
 
-This app is for kid tomanage collection of Welly toy cars (1:60). In store need to check does this toy is already in collectoin. 
-So I create Telegram bot to fast check (instead of an app =) )
-Next step is make it universal. By the way Telegram UI is good alternative to create app on every OS.
+Telegram used as UI.
 
-Catalog of items, Telegram used as UI.
 ## Features
 
 - add
 - delete
-- edit
 - find item by itemID, Model or Manufacture name contains
-- show description and photo
-
+- show description and photos
 
 ## Documentation
 
-Item:
+### Item:
 
 - Model name
 - Manufacture name
@@ -27,20 +22,23 @@ Item:
 - Color
 - Comments
 - Title photo
-- Photos (no limits)
+- []Photos 
 
 
 ## Usage/Examples
 
+Telegram Bots Token is in ENV (WELLY_TOKEN), or in .env file (TOKEN) or use flag `--token`
+
+Postgres URL is in ENV (DATABASE_URL) .env file (DATABASE_URL) or use flag `--pgurl`
+
+Bot operates here:
 ```javascript
 https://t.me/collectionist_bot
 ```
 
-
 ## Screenshots
 
-![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s1.png "Search")
-![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s2.png "Show all photos")
+| Search  | Show with photos | Add new |
+| ------------- | ------------- | ------------- |
+| ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s1.png "Search") | ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s2.png "Show photo") | ![App Screenshot](https://github.com/kormiltsev/tbot-welly/blob/main/etc/s3.png "Add new") |
 
-## Points to improve:
-- add web access to catalog

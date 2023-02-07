@@ -1,7 +1,6 @@
 package product
 
-//tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-
+// Welly is item (photo is stored on Telegram server, here store only photo id)
 type Welly struct {
 	UniqID      string   `json:"uniq_id"`
 	UserID      string   `json:"user_id"`
@@ -14,12 +13,14 @@ type Welly struct {
 	Comments    string   `json:"comments"`
 }
 
+// catalog
 type UW struct {
 	Users   map[string]User
 	Wellyes map[string]Welly
 	Deleted map[string]Welly
 }
 
+// user
 type User struct {
 	ID       int64  `json:"id"`
 	NameF    string `json:"first_name"`
@@ -28,11 +29,4 @@ type User struct {
 	Type     string `json:"type"`
 	Dialog   string `json:"dialog"`
 	NewItem  Welly  `json:"new_item"`
-}
-
-type Confpg struct {
-	Adress   string
-	User     string
-	Password string
-	DB       string
 }

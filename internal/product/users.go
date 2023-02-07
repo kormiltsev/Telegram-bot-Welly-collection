@@ -7,6 +7,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+// NewUser returns new emty User
 func NewUser() User {
 	return User{
 		ID:       0,

@@ -3,7 +3,6 @@ package commands
 import (
 	"log"
 	"strconv"
-	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/kormiltsev/tbot-welly/internal/product"
@@ -29,6 +28,7 @@ var Npc = Chars{
 	Amigos: Amig,
 }
 
+// NewUser add new user
 func NewUser(i64 int64) {
 	us := UserSpec{
 		Id:     strconv.FormatInt(i64, 10),
@@ -51,54 +51,12 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 		}
 	}()
 
-	// if buttons
-	// if update.CallbackQuery != nil {
-	// in case of JSON:
-	//=================================
-	// parsedData := NextItemButtinCarusel{}
-	// json.Unmarshal([]byte(update.CallbackQuery.Data), &parsedData)
-	// switch parsedData.Task {
-	// case "nextitem":
-	// 	FindNextItemCarusel(bot, &parsedData, update)
-	// 	log.Printf("Next page")
-	// default:
-	// 	log.Printf("wrong Task in Button")
-	// }
-	//=================================
-
-	// 	// just text
-	// 	switch update.CallbackQuery.Data {
-	// 	case "deletemsg":
-	// 		log.Printf("xxx")
-	// 	default:
-	// 		FindItemWithPhoto(bot, update)
-	// 		log.Printf("Show with photo")
-	// 	}
-	// 	// =========
-
-	// 	return
-	// }
-
-	// recognise user
+	// recognise user, create if not exists
 	u, ok := Npc.Amigos[strconv.FormatInt(update.Message.Chat.ID, 10)]
 	if !ok {
 		NewUser(update.Message.Chat.ID)
 		u = Npc.Amigos[strconv.FormatInt(update.Message.Chat.ID, 10)]
-		//Npc.Amigos[uid].Params["dialog"] = ""
 	}
-	// log.Println("user ad start", &u)
-
-	// 	//check for photo ?
-	// // update.Message.Photo
-	// if update.Message.Photo != nil {
-	// 	Photo := update.Message.Photo[0]
-	// 	PhotoID := Photo.FileID
-	// 	log.Printf(PhotoID)
-
-	// if update.Message.Document != nil {
-	// 	WhatTheDocument(bot, update)
-	// 	return
-	// }
 
 	// check for command
 	if update.Message.IsCommand() {
@@ -132,18 +90,6 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 			return
 		default:
 			EditParam("dialog", "none", &u)
-			if strings.HasPrefix(update.Message.Text, "/showallphotos_") {
-				SendGallery(&u, bot, update)
-				return
-			}
-			if strings.HasPrefix(update.Message.Text, "/deleteitem_") {
-				DeleteItemAsk(&u, bot, update)
-				return
-			}
-			if strings.HasPrefix(update.Message.Text, "/deleteitemsure_") {
-				DeleteItem(&u, bot, update)
-				return
-			}
 			Menu(&u, bot)
 			return
 		}
