@@ -3,8 +3,9 @@ FROM alpine:3.16.3
 WORKDIR /
 
 COPY .env ./
-COPY ./bin/app-386-linux ./
+COPY pic.png ./
+COPY ./bin/welly-linux ./
 
 EXPOSE 9998
 
-CMD [ "/app-386-linux" ]
+CMD [ "/welly-linux" ]

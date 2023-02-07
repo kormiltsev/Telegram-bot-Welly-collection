@@ -3,8 +3,6 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
-	"time"
 
 	"log"
 	"sort"
@@ -76,9 +74,15 @@ func FindItems(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message
 
 	messg := fmt.Sprintf("Looking for %s,\n found: %d\n", ask, i) + mess
 	msgt := tgbotapi.NewMessage(inputMessage.Chat.ID, messg)
+
+	ph, err := json.Marshal(CallBackButton{Command: "askwithphoto", Ask: ask})
+	if err != nil {
+		ph = nil
+	}
+
 	msgt.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonData("Show with Photo", ask),
+			tgbotapi.NewInlineKeyboardButtonData("Show with Photo", string(ph)),
 		),
 	)
 	//msgt.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
@@ -87,6 +91,7 @@ func FindItems(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message
 	}
 }
 
+// answer is text
 func FindItem(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message) {
 	ask := inputMessage.Text
 	mess := "Looking for " + ask + "\n"
@@ -131,8 +136,12 @@ func FindItem(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message)
 	}
 }
 
+// answer is 1 photo in 1 message per item found
 func FindItemWithPhoto(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
-	ask := update.CallbackQuery.Data
+	// ask := update.CallbackQuery.Data
+	data := CallBackButton{}
+	json.Unmarshal([]byte(update.CallbackQuery.Data), &data)
+	ask := data.Ask
 	i := 0
 	for _, w := range product.FindItems(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10), ask) {
 		file := tgbotapi.FileID("AgACAgIAAxkBAAIGomLrzy2KPw72xfdESzZ38rTCaBi7AALmwDEbmLVhSzsBlE2C-TvzAQADAgADcwADKQQ") // NGGYU picture
@@ -140,15 +149,30 @@ func FindItemWithPhoto(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 			file = tgbotapi.FileID(w.TitleFoto)
 		}
 		msg := tgbotapi.NewPhoto(update.CallbackQuery.Message.Chat.ID, file)
-		msg.Caption = fmt.Sprintf("%s %s %s\n%s %s\n/showallphotos_%s\n\n\n\n/deleteitem_%s",
+		msg.Caption = fmt.Sprintf("%s %s %s\n%s %s\n", ///showallphotos_%s\n\n\n\n/deleteitem_%s",
 			w.Manufacture,
 			w.Model,
 			w.ItemID,
 			w.Color,
-			w.Comments,
-			w.UniqID[len(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10)):],
-			w.UniqID[len(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10)):])
+			w.Comments)
+		// w.UniqID[len(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10)):],
+		// w.UniqID[len(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10)):])
 		//msg.ReplyMarkp = tgbotapi.NewRemoveKeybard(true)
+		ph, err := json.Marshal(CallBackButton{Command: "photos", ItemIDbyUser: w.UniqID[len(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10)):]})
+		if err != nil {
+			ph = nil
+		}
+		del, err := json.Marshal(CallBackButton{Command: "deleteask", ItemIDbyUser: w.UniqID[len(strconv.FormatInt(update.CallbackQuery.Message.Chat.ID, 10)):]})
+		if err != nil {
+			del = nil
+		}
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("All Photos", string(ph)),
+				tgbotapi.NewInlineKeyboardButtonData("Delete", string(del)),
+			),
+		)
+		// send
 		if _, err := bot.Send(msg); err != nil {
 			log.Panic(err)
 		}
@@ -161,81 +185,6 @@ func FindItemWithPhoto(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
 		if _, err := bot.Send(msg); err != nil {
 			log.Panic(err)
 		}
-	}
-}
-
-func SendGallery(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message) {
-	s := strings.Split(inputMessage.Text, "_")
-	log.Println(s)
-	w := product.FindID(strconv.FormatInt(inputMessage.Chat.ID, 10) + s[1])
-	phots := make([]string, 0)
-	if len(w.TitleFoto) >= 60 {
-		phots = append(phots, w.TitleFoto)
-	}
-	for _, ph := range w.AllFoto {
-		phots = append(phots, ph)
-	}
-	var listMediaPhotoInput []interface{}
-
-	for i := 0; i < len(phots); i++ {
-		if i == 10 {
-			msg := tgbotapi.NewMediaGroup(inputMessage.Chat.ID, listMediaPhotoInput)
-			_, err := bot.Send(msg)
-			if err != nil {
-				log.Println(err)
-			}
-			listMediaPhotoInput = listMediaPhotoInput[:0]
-		}
-		listMediaPhotoInput = append(listMediaPhotoInput, tgbotapi.NewInputMediaPhoto(tgbotapi.FileID(phots[i])))
-	}
-	msg := tgbotapi.NewMediaGroup(inputMessage.Chat.ID, listMediaPhotoInput)
-	_, err := bot.Send(msg)
-	if err != nil {
-		log.Println(err)
-	}
-}
-func DeleteItemAsk(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message) {
-	s := strings.Split(inputMessage.Text, "_")
-	log.Println(s)
-	w := product.FindID(strconv.FormatInt(inputMessage.Chat.ID, 10) + s[1])
-	msgt := fmt.Sprintf("Are you SURE you want to DELETE this Item?\n%s %s %s\n/deleteitemsure_%s\n\n\n\n:(",
-		w.Manufacture,
-		w.Model,
-		w.ItemID,
-		s[1])
-	//msg.ReplyMarkp = tgbotapi.NewRemoveKeybard(true)
-	msg := tgbotapi.NewMessage(inputMessage.Chat.ID, msgt)
-	a, err := bot.Send(msg)
-	if err != nil {
-		log.Panic(err)
-	}
-	<-time.After(time.Second * 5)
-	t := "Time out"
-	msgr := tgbotapi.NewEditMessageText(inputMessage.Chat.ID, a.MessageID, t)
-	if _, err = bot.Send(msgr); err != nil {
-		log.Panic(err)
-	}
-}
-func DeleteItem(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message) {
-	s := strings.Split(inputMessage.Text, "_")
-	log.Println(s)
-	w, qty := product.DeleteID(strconv.FormatInt(inputMessage.Chat.ID, 10) + s[1])
-
-	file := tgbotapi.FileID("AgACAgIAAxkBAAIGomLrzy2KPw72xfdESzZ38rTCaBi7AALmwDEbmLVhSzsBlE2C-TvzAQADAgADcwADKQQ")
-	if len(w.TitleFoto) >= 60 {
-		file = tgbotapi.FileID(w.TitleFoto)
-	}
-	msg := tgbotapi.NewPhoto(inputMessage.Chat.ID, file)
-	msg.Caption = fmt.Sprintf("%s %s %s\n%s %s\nWAS DELETED\n%d items in catalog",
-		w.Manufacture,
-		w.Model,
-		w.ItemID,
-		w.Color,
-		w.Comments,
-		qty)
-	//msg.ReplyMarkp = tgbotapi.NewRemoveKeybard(true)
-	if _, err := bot.Send(msg); err != nil {
-		log.Panic(err)
 	}
 }
 

@@ -14,40 +14,28 @@ import (
 )
 
 var myToken string
-var conf = product.Confpg{}
 var postgres bool
 
 func Flags() {
 	// in case of .env
 	godotenv.Load()
-	conf.Adress = os.Getenv("ADR")
-	conf.User = os.Getenv("USR")
-	conf.Password = os.Getenv("PASS")
-	conf.DB = os.Getenv("DB")
+	pgurl := os.Getenv("DATABASE_URL")
 
 	myToken = os.Getenv("TOKEN")
 
 	// in case of flags thru termina
 	{
-		a := flag.String("adr", conf.Adress, "localhost:8000")
-		u := flag.String("usr", conf.User, "Postgres user")
-		p := flag.String("pas", conf.Password, "postgres password")
-		d := flag.String("db", conf.DB, "database name")
+		flag.StringVar(&pgurl, "pgurl", pgurl, "DATABASE_URL")
 		tkn := flag.String("port", myToken, "TOKEN of Telegram bot")
-		i := flag.Bool("pg", false, "-db = postgres. default (false): internal file (json)")
 		flag.Parse()
-		conf.Adress = *a
-		conf.User = *u
-		conf.Password = *p
-		conf.DB = *d
 
 		myToken = *tkn
-		postgres = *i
 	}
 	// in case of any error use default
-	if conf.Adress == "" || conf.User == "" || conf.Password == "" || conf.DB == "" {
-		postgres = false
+	if pgurl != "" {
+		postgres = true
 	}
+	product.SetURL(pgurl)
 }
 
 func main() {
@@ -73,7 +61,7 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 
 	Ws, catok := product.GetCatalog() // Catalog from file
-	log.Println("Catalog: %s", catok)
+	log.Println("Catalog status:", catok)
 
 	// reminder:
 	// update.Message.Chat.UserName
@@ -88,10 +76,11 @@ func main() {
 
 	for update := range updates {
 		//log.Println(update.Message.Chat.UserName, update.Message.Chat.ID, update.Message.Text)
-		if update.CallbackQuery == nil { //if not button with CallBack, then income print in terminal and starts hendler
-			//fmt.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+		if update.CallbackQuery != nil { //if not button with CallBack, then income print in terminal and starts hendler
+			commands.HandleCallBack(bot, update, Ws)
+		} else {
+			commands.HandleUpdate(bot, update, Ws)
 		}
-		commands.HandleUpdate(bot, update, Ws)
 	}
 }
 

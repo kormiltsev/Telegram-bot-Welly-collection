@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -16,14 +17,14 @@ func CatalogAdres() string {
 func SaveCatalog() {
 	rawDataOut, err := json.MarshalIndent(&Ws, "", "  ")
 	if err != nil {
-		fmt.Println("JSON marshaling failed:", err)
+		log.Println("JSON marshaling failed:", err)
 	}
 
 	err = ioutil.WriteFile(file, rawDataOut, 0)
 	if err != nil {
-		fmt.Println("Cannot write updated catalog file:", err)
+		log.Println("Cannot write updated catalog file:", err)
 	}
-	fmt.Println("saved in ", file)
+	log.Println("saved in ", file)
 }
 
 // upload in memory catalog from json file
@@ -48,6 +49,6 @@ func UploadCatalog(Ws *UW) (*UW, string) {
 	if err := jsonParser.Decode(&Ws); err != nil {
 		ok = fmt.Sprintln(err)
 	}
-	fmt.Println("Catalog uploaded from: ", file)
+	log.Println("Catalog uploaded from: ", file)
 	return Ws, ok
 }

@@ -2,7 +2,7 @@ package product
 
 import (
 	//tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"fmt"
+
 	"sort"
 	"strconv"
 	"strings"
@@ -36,7 +36,6 @@ func AddNewItem(i string, w Welly) int {
 	w.UniqID = i + strconv.FormatInt(time.Now().Unix(), 10)
 	Ws.Wellyes[w.UniqID] = w
 	SaveCatalog()
-	fmt.Println(Ws.Wellyes)
 	return len(Ws.Wellyes)
 }
 

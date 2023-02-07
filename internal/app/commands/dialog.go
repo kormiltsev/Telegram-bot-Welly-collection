@@ -181,5 +181,9 @@ func PushNewWellyToCatalog(u *UserSpec) int {
 		AllFoto:     ph,
 		Comments:    u.Params["comments"].Value,
 	}
+	err := product.UploadRowPostgres(&welly)
+	if err != nil {
+		log.Println("error write to postgres: ", err)
+	}
 	return product.AddNewItem(u.Id, welly)
 }

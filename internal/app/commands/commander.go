@@ -52,32 +52,32 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 	}()
 
 	// if buttons
-	if update.CallbackQuery != nil {
-		// in case of JSON:
-		//=================================
-		// parsedData := NextItemButtinCarusel{}
-		// json.Unmarshal([]byte(update.CallbackQuery.Data), &parsedData)
-		// switch parsedData.Task {
-		// case "nextitem":
-		// 	FindNextItemCarusel(bot, &parsedData, update)
-		// 	log.Printf("Next page")
-		// default:
-		// 	log.Printf("wrong Task in Button")
-		// }
-		//=================================
+	// if update.CallbackQuery != nil {
+	// in case of JSON:
+	//=================================
+	// parsedData := NextItemButtinCarusel{}
+	// json.Unmarshal([]byte(update.CallbackQuery.Data), &parsedData)
+	// switch parsedData.Task {
+	// case "nextitem":
+	// 	FindNextItemCarusel(bot, &parsedData, update)
+	// 	log.Printf("Next page")
+	// default:
+	// 	log.Printf("wrong Task in Button")
+	// }
+	//=================================
 
-		// just text
-		switch update.CallbackQuery.Data {
-		case "deletemsg":
-			log.Printf("xxx")
-		default:
-			FindItemWithPhoto(bot, update)
-			log.Printf("Show with photo")
-		}
-		// =========
+	// 	// just text
+	// 	switch update.CallbackQuery.Data {
+	// 	case "deletemsg":
+	// 		log.Printf("xxx")
+	// 	default:
+	// 		FindItemWithPhoto(bot, update)
+	// 		log.Printf("Show with photo")
+	// 	}
+	// 	// =========
 
-		return
-	}
+	// 	return
+	// }
 
 	// recognise user
 	u, ok := Npc.Amigos[strconv.FormatInt(update.Message.Chat.ID, 10)]
@@ -86,7 +86,7 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 		u = Npc.Amigos[strconv.FormatInt(update.Message.Chat.ID, 10)]
 		//Npc.Amigos[uid].Params["dialog"] = ""
 	}
-	log.Println("user ad start", &u)
+	// log.Println("user ad start", &u)
 
 	// 	//check for photo ?
 	// // update.Message.Photo
@@ -133,15 +133,15 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 		default:
 			EditParam("dialog", "none", &u)
 			if strings.HasPrefix(update.Message.Text, "/showallphotos_") {
-				SendGallery(&u, bot, update.Message)
+				SendGallery(&u, bot, update)
 				return
 			}
 			if strings.HasPrefix(update.Message.Text, "/deleteitem_") {
-				DeleteItemAsk(&u, bot, update.Message)
+				DeleteItemAsk(&u, bot, update)
 				return
 			}
 			if strings.HasPrefix(update.Message.Text, "/deleteitemsure_") {
-				DeleteItem(&u, bot, update.Message)
+				DeleteItem(&u, bot, update)
 				return
 			}
 			Menu(&u, bot)
@@ -169,5 +169,5 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 	// if u := Ws.Users[strconv.FormatInt(update.Message.Chat.ID, 10)]; u.Dialog != "" {
 	// 	c.Dialog(update.Message, &u)
 	// }
-	log.Println(u)
+	// log.Println(u)
 }
