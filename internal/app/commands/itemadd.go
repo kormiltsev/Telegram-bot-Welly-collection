@@ -79,8 +79,7 @@ func Dialogue(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message)
 		}
 	case "title_foto":
 		photoID := "none"
-		if inputMessage.Text != "" {
-		} else {
+		if inputMessage.Text == "" {
 			photo := inputMessage.Photo[0]
 			photoID = photo.FileID
 		}
@@ -102,28 +101,29 @@ func Dialogue(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message)
 
 		// last parameter, show new item data
 	case "comments":
-		file := tgbotapi.FileID("AgACAgIAAxkBAAIGAmLpQ12qYRKTL-4aT8f022NzKz_OAALevzEb-6pJS9Hg5i87VdjUAQADAgADeAADKQQ") // "Never Gonna Give You Up" picture
+		msg := tgbotapi.NewPhoto(inputMessage.Chat.ID, tgbotapi.FilePath("./nofoto.png"))
 		i := 0
 		tx := "none"
 		for key, v := range u.Params {
 			if strings.HasPrefix(key, "photo_") {
 				i++
-				file = tgbotapi.FileID(v.Value)
+				msg = tgbotapi.NewPhoto(inputMessage.Chat.ID, tgbotapi.FileID(v.Value))
 				tx = v.Value
 			}
 		}
+
 		EditParam("comments", inputMessage.Text, u)
 		EditParam("dialog", "checkandsaveitem", u)
+
 		if len(u.Params["title_foto"].Value) >= 60 {
-			file = tgbotapi.FileID(u.Params["title_foto"].Value)
+			msg = tgbotapi.NewPhoto(inputMessage.Chat.ID, tgbotapi.FileID(u.Params["title_foto"].Value))
 		} else {
 			u.Params["title_foto"] = Param{
 				Title: "title_foto",
 				Value: tx,
 			}
 		}
-		msg := tgbotapi.NewPhoto(inputMessage.Chat.ID, file)
-		msg.Caption = fmt.Sprintf("%s =Manufactrure\n%s =Model\n%s =WellyID\nColor: %s\nComments: %s\n+ %d photos",
+		msg.Caption = fmt.Sprintf("%s (Manufactrure)\n%s (Model)\n%s (WellyID)\nColor: %s\nComments: %s\n+ %d photos",
 			u.Params["manufacture"].Value,
 			u.Params["model"].Value,
 			u.Params["itemid"].Value,

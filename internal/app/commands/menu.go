@@ -8,8 +8,7 @@ import (
 
 // Menu is for unsigned funckions
 func Menu(u *UserSpec, bot *tgbotapi.BotAPI) {
-	file := tgbotapi.FileID("AgACAgIAAxkDAAIFKGLhUvVhKqcrdTToDwPgQ3xvIUWxAAJ8vTEbDQ3wSt4fooC36sHLAQADAgADdwADKQQ")
-	msg := tgbotapi.NewPhoto(u.Id64, file)
+	msg := tgbotapi.NewPhoto(u.Id64, tgbotapi.FilePath("./pic.png"))
 	msg.Caption = "NGGYU\n/add - add new item\n/start - info\n/catalog - list of all items"
 	//msg := tgbotapi.NewMessage(u.Id64, "To find item send name or item ID")
 	msg.ReplyMarkup = tgbotapi.NewReplyKeyboard(

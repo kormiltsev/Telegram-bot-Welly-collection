@@ -70,11 +70,10 @@ func FindItems(u *UserSpec, bot *tgbotapi.BotAPI, inputMessage *tgbotapi.Message
 func FindItemWithPhoto(ask string, chatid int64, bot *tgbotapi.BotAPI) {
 	i := 0
 	for _, w := range product.FindItems(strconv.FormatInt(chatid, 10), ask) {
-		file := tgbotapi.FileID("AgACAgIAAxkBAAIGomLrzy2KPw72xfdESzZ38rTCaBi7AALmwDEbmLVhSzsBlE2C-TvzAQADAgADcwADKQQ") // NGGYU picture
+		msg := tgbotapi.NewPhoto(chatid, tgbotapi.FilePath("./nofoto.png"))
 		if len(w.TitleFoto) >= 60 {
-			file = tgbotapi.FileID(w.TitleFoto)
+			msg = tgbotapi.NewPhoto(chatid, tgbotapi.FileID(w.TitleFoto))
 		}
-		msg := tgbotapi.NewPhoto(chatid, file)
 		msg.Caption = fmt.Sprintf("%s %s %s\n%s %s\n",
 			w.Manufacture,
 			w.Model,

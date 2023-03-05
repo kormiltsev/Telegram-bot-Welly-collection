@@ -10,6 +10,7 @@ import (
 
 var file = "./Catalog.json"
 
+// CatalogAdres return file adress
 func CatalogAdres() string {
 	return file
 }

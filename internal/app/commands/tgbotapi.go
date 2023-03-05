@@ -1,5 +1,7 @@
 package commands
 
+// file := tgbotapi.FileID("AgACAgIAAxkDAAIFKGLhUvVhKqcrdTToDwPgQ3xvIUWxAAJ8vTEbDQ3wSt4fooC36sHLAQADAgADdwADKQQ")
+
 // reminder:
 // update.Message.Chat.UserName
 // update.Message.Chat.ID

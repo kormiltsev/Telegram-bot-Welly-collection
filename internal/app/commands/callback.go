@@ -43,6 +43,9 @@ func HandleCallBack(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW
 	case "delete":
 		DeleteItem(itemid, update.CallbackQuery.Message.Chat.ID, bot, update)
 		return
+	case "canceldelete":
+		CancelDeleteItem(bot, update)
+		return
 	default:
 		log.Printf("wrong Task in Button")
 	}

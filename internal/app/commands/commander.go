@@ -94,16 +94,16 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 			return
 		}
 	} else {
+		// if no command check is there dialog in progress?
 		if d := u.Params["dialog"].Value; d != "none" {
 			Dialogue(&u, bot, update.Message)
 		} else {
 			// search text by model, manufacture or welly id
 			FindItems(&u, bot, update.Message) // works as list
-			//Default(bot, update.Message)
 			return
 		}
 	}
-	if update.Message == nil { // If we got a message / skip non-message
+	if update.Message == nil {
 		return
 	}
 
@@ -111,9 +111,4 @@ func HandleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update, Ws *product.UW) 
 	if !ok {
 		product.CheckUserExist(update.Message)
 	}
-
-	// if u := Ws.Users[strconv.FormatInt(update.Message.Chat.ID, 10)]; u.Dialog != "" {
-	// 	c.Dialog(update.Message, &u)
-	// }
-	// log.Println(u)
 }

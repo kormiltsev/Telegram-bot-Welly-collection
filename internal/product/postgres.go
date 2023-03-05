@@ -1,3 +1,4 @@
+// used only for backup now
 package product
 
 import (

@@ -15,4 +15,8 @@ Catalog.json
 # Test binary, built with `go test -c`
 *.test
 
+# bins
 bin/
+
+# api documentation from tgbotapi package
+tbot-welly/internal/app/commands/tgbotapi.go

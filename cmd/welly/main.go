@@ -20,8 +20,8 @@ type envcon struct {
 	DBlink  string `env:"DATABASE_URL"`
 }
 
-// flags
-func flags() {
+// flags reads flags, ENV and .env file
+func flagsEnv() {
 	// in case of ENV
 	err := env.Parse(con)
 	if err != nil {
@@ -43,22 +43,18 @@ func flags() {
 	// push url to storage
 	product.SetURL(pgurl)
 }
-func (c *SetByEnv) Environment() {
-	err := env.Parse(c)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("got from env:", c)
-}
 
 func main() {
 	//bot.Debug = true // debug status
 
-	flags()
+	// get variables from env or flags
+	flagsEnv()
+
 	bot, err := tgbotapi.NewBotAPI(con.myToken)
 	if err != nil {
 		panic(err)
 	}
+	// save all data to file before exit
 	defer commands.SaveAndQuit(bot)
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
